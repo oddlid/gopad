@@ -1,0 +1,8 @@
+Website = "https://example.com"
+
+[Details]
+Icon = "baseline_edit_note_black_24dp.png"
+Name = "GamePad"
+ID = "net.oddware.gopad"
+Version = "0.0.1"
+Build = 1
