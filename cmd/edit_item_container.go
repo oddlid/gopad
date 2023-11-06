@@ -9,6 +9,13 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+type editMode uint8
+
+const (
+	modeAdd editMode = iota
+	modeEdit
+)
+
 type editItemContainer struct {
 	entry       *widget.Entry
 	keepOpen    *widget.Check
@@ -18,6 +25,7 @@ type editItemContainer struct {
 	cancelLabel string
 	onSave      func()
 	onCancel    func()
+	mode        editMode
 }
 
 func (eic *editItemContainer) render() *fyne.Container {
@@ -31,7 +39,13 @@ func (eic *editItemContainer) render() *fyne.Container {
 	eic.entry.OnSubmitted = func(_ string) {
 		eic.onSave()
 	}
-	eic.keepOpen = widget.NewCheck(eic.checkLabel, nil)
+	getCheck := func() fyne.CanvasObject {
+		if eic.mode == modeAdd {
+			eic.keepOpen = widget.NewCheck(eic.checkLabel, nil)
+			return eic.keepOpen
+		}
+		return nil
+	}
 	btnSave := widget.NewButtonWithIcon(eic.saveLabel, theme.ConfirmIcon(), eic.onSave)
 	btnSave.Importance = widget.SuccessImportance
 	return container.NewVBox(
@@ -45,7 +59,7 @@ func (eic *editItemContainer) render() *fyne.Container {
 		container.NewBorder(
 			nil,
 			nil,
-			eic.keepOpen,
+			getCheck(), // will be nil if mode == modeEdit
 			container.NewHBox(
 				widget.NewButtonWithIcon(eic.cancelLabel, theme.CancelIcon(), eic.onCancel),
 				btnSave,

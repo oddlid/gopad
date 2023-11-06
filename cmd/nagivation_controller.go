@@ -14,6 +14,7 @@ type pageID uint8
 
 const (
 	pIDGameList pageID = iota
+	pIDAddItem
 	pIDEditItem
 )
 
